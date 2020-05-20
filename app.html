@@ -1,27 +1,50 @@
 <!DOCTYPE html>
 <head>
-    <title>PromiseThenCatchExample</title>
+    <title>JS-Promisehandling</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CDN -->
     <link 
         rel="stylesheet" 
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
     crossorigin="anonymous">
 
+    <!-- Just a bottom margin for the grid rows -->
+    <style>
+        .row {
+            margin-bottom: 5px;
+        }
+
+        .container {
+            margin-bottom: 50px;
+        }
+    </style>
+
     <script>
-        /*In der Vorliegen Struktur, springt die Promise bei Resolve in Pfad A, bei Reject in Pfad B. 
-        Nur bei einem Fehler in A oder B (Exception) wird catch ausgeführt*/ 
-        let showFunction = function showResult() {
-            //outPutBox.innerHTML = "Hallo";
-            promiseFunktion().then(
+
+        
+
+        
+        let showResult = (whatToDoInPromise, callCatch) => {
+            
+            promiseFunktion(whatToDoInPromise).then(
                 //A
                 (goodPart) => {
                     //In dieser Zeile den Variablennamen am Ende ändern. goodParta --> goodPart
+                    if(callCatch) {
+                        throw("Exception in resolve callback");
+                    }
+
                     outPutBox.innerHTML = "Then goodPart: " + goodParta;
                 },
                 //B
                 (badPart) => {
+                    if(callCatch) {
+                        throw("Exception in reject callback");
+                    }
+
                     outPutBox.innerHTML = "Then badPart: " + badPart;
                 }
             ).catch(
@@ -32,12 +55,12 @@
 
         }
 
-        function promiseFunktion() {
+        function promiseFunktion(whatToDo) {
             return new Promise((resolve, reject) => {
                 let testVar = inputBox.value;
                 console.log(testVar);
 
-                if(testVar == 1) {
+                if(whatToDo == 1) {
                     resolve("Good");
                 }
                 else {
@@ -49,22 +72,108 @@
 </head>
 
 <body>
-    <p>Die Web App verdeutlicht das Sprungverhalten von Promises und zeigt:</p>
-    <ul>
-        <li>Wann wird der Erfolgsfall von then ausgeführt</li>
-        <li>Wann wird der "Fehlerfall" von then ausgeführt</li>
-        <li>Wann wirt catch ausgeführt</li>
-    </ul>
-    <p>Ein Blick in den Quellcode verdeutlich, dass im Moment Catch ausgeführt wird, sofern man 1 einträgt. Bei allen anderen Eingaben der Reject Part. Durch eine kleine Änderung kann man das Verhalten modifizieren.</p>
 
-    <input type="number" id="inputBox" value="1">
-    <input type="button" value="DoIt" id="starter">
+    <div class="jumboton text-center">
+        <h1 class="display-1">Javascript Promisehandling</h1>
+    </div>
 
-    <p id="Ausgabe"></p>
+    <div class="container">
+
+    
+        <p>This app will explain the JS promise behavior</p>
+        <ul class="list-group">
+            <li class="list-group-item">What causes the first promise callback function to execute (resolve callback)?</li>
+            <li class="list-group-item">What causes the second promise callback function to execute (reject callback)?</li>
+            <li class="list-group-item">What causes the catch callback function to execute?</li>
+        </ul>
+   
+        
+    </div>
+
+    <div class="container">  
+        <p>
+            The Source code holds 2 functions. <br>
+            <ol>
+                <li>
+                    The "low level" function (promiseFunktion) returns a promise that immedially resolves or rejects, based on a numerical Value
+                </li>
+                <li>
+                    The "high level" function (showResult) resolves that promise. Based on a boolean Value it throws an error, inside the promise callbacks
+                </li>
+            </ol>
+        </p>
+        
+        <p>
+            Each of the following buttons represents an individual parameterization.
+        </p>
+        <div class="row">
+            <div class="col-sm">
+                <ul>
+                    <li>"1" for whatToDoInPromise (Promise Resolve)</li>
+                    <li>"False" for callCatch (no Exception)</li>
+                </ul>
+            </div>
+            <div class="col-sm"><button id="resolveHandler" class="btn btn-primary">Do it</button></div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <ul>
+                    <li>"2" for whatToDoInPromise (Promise Reject)</li>
+                    <li>"False" for callCatch (no Exception)</li>
+                </ul>
+            </div>
+            <div class="col-sm"><button id="rejectHandler" class="btn btn-primary">Do it</button></div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <ul>
+                    <li>"1" for whatToDoInPromise (Promise Resolve)</li>
+                    <li>"True" for callCatch (throw Exception)</li>
+                </ul>
+            </div>
+            <div class="col-sm"><button id="resolveHandlerCatch" class="btn btn-primary">Do it</button></div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <ul>
+                    <li>"2" for whatToDoInPromise (Promise Reject)</li>
+                    <li>"True" for callCatch (throw Exception)</li>
+                </ul>
+            </div>
+            <div class="col-sm"><button id="rejectHandlerCatch" class="btn btn-primary">Do it</button></div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">Execution Result:</div>
+            <div class="col-sm" id="outPutBox"></div>
+        </div>
+    </div>
 
     <script>
-        document.getElementById("starter").addEventListener("click", showFunction);
-        var outPutBox = document.getElementById("Ausgabe");
-        var inputBox = document.getElementById("inputBox");
+        let outPutBox = document.getElementById("outPutBox");
+        let resolveHandler = document.getElementById("resolveHandler");
+        let rejectHandler = document.getElementById("rejectHandler");
+        let resolveHandlerCatch = document.getElementById("resolveHandlerCatch");
+        let rejectHandlerCatch = document.getElementById("rejectHandlerCatch");
+
+        resolveHandler.addEventListener("click", () => {
+
+        });
+
+        rejectHandler.addEventListener("clicK", () => {
+
+        });
+
+        resolveHandlerCatch.addEventListener("click"), () => {
+
+        };
+
+        rejectHandlerCatch.addEventListener("click", () => {
+
+        });
+        
     </script>
 </body>
