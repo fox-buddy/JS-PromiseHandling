@@ -26,48 +26,61 @@
 
         
 
-        
+        // High Level Function resolves promise and outputs result
         let showResult = (whatToDoInPromise, callCatch) => {
             
             promiseFunktion(whatToDoInPromise).then(
-                //A
-                (goodPart) => {
-                    //In dieser Zeile den Variablennamen am Ende ändern. goodParta --> goodPart
+                //Resolve Callback
+                (goodPartValue) => {
+                    // Check if error should be thrown
                     if(callCatch) {
                         throw("Exception in resolve callback");
                     }
 
-                    outPutBox.innerHTML = "Then goodPart: " + goodParta;
+                    // Hand over to output builder and use the submitted value from the promise
+                    outPutResult(`Resolve callback was executed and got value: ${goodPartValue}`, whatToDoInPromise, callCatch);
                 },
-                //B
-                (badPart) => {
+                //Reject Callback
+                (badPartValue) => {
+                    // Check if error should be thrown
                     if(callCatch) {
                         throw("Exception in reject callback");
                     }
 
-                    outPutBox.innerHTML = "Then badPart: " + badPart;
+                    // Hand over to output builder and use the submitted value from the promise
+                    outPutResult(`Reject callback was executed and got value: ${badPartValue}`, whatToDoInPromise, callCatch);
                 }
             ).catch(
                 (errorPart) => {
-                    outPutBox.innerHTML = "Catch errorPart: " + errorPart;
+                    outPutResult("catch callback was executed", whatToDoInPromise, callCatch);
                 }
             );
 
         }
 
+        // Just a simple Promise. Resolves on whatToDo 1, Rejects on any other Value (Buttons hand over 1 or 2)
         function promiseFunktion(whatToDo) {
             return new Promise((resolve, reject) => {
                 let testVar = inputBox.value;
                 console.log(testVar);
 
                 if(whatToDo == 1) {
-                    resolve("Good");
+                    // The value (in this case "good" will be passed through)
+                    resolve("Good");    
                 }
                 else {
+                    // The value (in this case "bad will be passed through")
                     reject("Bad");
                 }
             })
         }
+
+        // Output
+        let outPutResult = (errorText, whatToDoInPromise, callCatch) =>  {
+            let output = `${errorText}. Execution with whatToDoInPromise: ${whatToDoInPromise}, callCatch: ${callCatch}`;
+            outPutBox.innerHTML = output;
+        }
+
     </script>
 </head>
 
@@ -160,19 +173,19 @@
         let rejectHandlerCatch = document.getElementById("rejectHandlerCatch");
 
         resolveHandler.addEventListener("click", () => {
-
+            showResult(1,False);
         });
 
         rejectHandler.addEventListener("clicK", () => {
-
+            showResult(2, False);
         });
 
         resolveHandlerCatch.addEventListener("click"), () => {
-
+            showResult(1, True);
         };
 
         rejectHandlerCatch.addEventListener("click", () => {
-
+            showResult(2, True);
         });
         
     </script>
