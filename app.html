@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<head>
+    <title>PromiseThenCatchExample</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script>
+        /*In der Vorliegen Struktur, springt die Promise bei Resolve in Pfad A, bei Reject in Pfad B. 
+        Nur bei einem Fehler in A oder B (Exception) wird catch ausgeführt*/ 
+        let showFunction = function showResult() {
+            //outPutBox.innerHTML = "Hallo";
+            promiseFunktion().then(
+                //A
+                (goodPart) => {
+                    //In dieser Zeile den Variablennamen am Ende ändern. goodParta --> goodPart
+                    outPutBox.innerHTML = "Then goodPart: " + goodParta;
+                },
+                //B
+                (badPart) => {
+                    outPutBox.innerHTML = "Then badPart: " + badPart;
+                }
+            ).catch(
+                (errorPart) => {
+                    outPutBox.innerHTML = "Catch errorPart: " + errorPart;
+                }
+            );
+
+        }
+
+        function promiseFunktion() {
+            return new Promise((resolve, reject) => {
+                let testVar = inputBox.value;
+                console.log(testVar);
+
+                if(testVar == 1) {
+                    resolve("Good");
+                }
+                else {
+                    reject("Bad");
+                }
+            })
+        }
+    </script>
+</head>
+
+<body>
+    <p>Die Web App verdeutlicht das Sprungverhalten von Promises und zeigt:</p>
+    <ul>
+        <li>Wann wird der Erfolgsfall von then ausgeführt</li>
+        <li>Wann wird der "Fehlerfall" von then ausgeführt</li>
+        <li>Wann wirt catch ausgeführt</li>
+    </ul>
+    <p>Ein Blick in den Quellcode verdeutlich, dass im Moment Catch ausgeführt wird, sofern man 1 einträgt. Bei allen anderen Eingaben der Reject Part. Durch eine kleine Änderung kann man das Verhalten modifizieren.</p>
+
+    <input type="number" id="inputBox" value="1">
+    <input type="button" value="DoIt" id="starter">
+
+    <p id="Ausgabe"></p>
+
+    <script>
+        document.getElementById("starter").addEventListener("click", showFunction);
+        var outPutBox = document.getElementById("Ausgabe");
+        var inputBox = document.getElementById("inputBox");
+    </script>
+</body>
