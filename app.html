@@ -20,6 +20,10 @@
         .container {
             margin-bottom: 50px;
         }
+
+        .button-column {
+            text-align: center;
+        }
     </style>
 
     <script>
@@ -38,7 +42,7 @@
                     }
 
                     // Hand over to output builder and use the submitted value from the promise
-                    outPutResult(`Resolve callback was executed and got value: ${goodPartValue}`, whatToDoInPromise, callCatch);
+                    outPutResult(`Resolve callback was executed and got value: "${goodPartValue}"`, whatToDoInPromise, callCatch);
                 },
                 //Reject Callback
                 (badPartValue) => {
@@ -48,11 +52,15 @@
                     }
 
                     // Hand over to output builder and use the submitted value from the promise
-                    outPutResult(`Reject callback was executed and got value: ${badPartValue}`, whatToDoInPromise, callCatch);
+                    outPutResult(`Reject callback was executed and got value: "${badPartValue}"`, whatToDoInPromise, callCatch);
                 }
             ).catch(
-                (errorPart) => {
-                    outPutResult("catch callback was executed", whatToDoInPromise, callCatch);
+                (errorMessage) => {
+                    outPutResult(`Catch callback was executed and got value: "${errorMessage}"`, whatToDoInPromise, callCatch);
+                }
+            ).finally(
+                () => {
+                    console.log("Yes this works, too");  
                 }
             );
 
@@ -63,18 +71,28 @@
             return new Promise((resolve, reject) => {
                 if(whatToDo == 1) {
                     // The value (in this case "good" will be passed through)
-                    resolve("Good");    
+                    resolve("Promise resolved");    
                 }
                 else {
                     // The value (in this case "bad will be passed through")
-                    reject("Bad");
+                    reject("Promise rejected");
                 }
             })
         }
 
         // Output
         let outPutResult = (errorText, whatToDoInPromise, callCatch) =>  {
-            let output = `${errorText}. Execution with whatToDoInPromise: ${whatToDoInPromise}, callCatch: ${callCatch}`;
+            let output = `
+                <p>
+                <b>${errorText}</b>
+                <br> 
+                Execution with: 
+                </p>
+                <ul>
+                    <li>whatToDoInPromise: ${whatToDoInPromise}</li>
+                    <li>callCatch: ${callCatch}</li>
+                </ul>
+            `;
             outPutBox.innerHTML = output;
         }
 
@@ -83,26 +101,29 @@
 
 <body>
 
-    <div class="jumboton text-center">
+    <div class="jumbotron text-center">
         <h1 class="display-1">Javascript Promisehandling</h1>
     </div>
 
     <div class="container">
 
     
-        <p>This app will explain the JS promise behavior</p>
-        <ul class="list-group">
-            <li class="list-group-item">What causes the first promise callback function to execute (resolve callback)?</li>
-            <li class="list-group-item">What causes the second promise callback function to execute (reject callback)?</li>
-            <li class="list-group-item">What causes the catch callback function to execute?</li>
+        <h2>This app will explain the basic JS promise behavior</h2>
+        <ul>
+            <li>What causes the first promise callback function to execute (resolve callback)?</li>
+            <li>What causes the second promise callback function to execute (reject callback)?</li>
+            <li>What causes the catch callback function to execute?</li>
+            <li>Shows that Promises can handle a finally, which is a relatively new feature (console output)</li>
         </ul>
    
         
     </div>
 
+    <hr>
+
     <div class="container">  
-        <p>
-            The Source code holds 2 functions. <br>
+        
+        <h2>The Source code holds 2 functions</h2>
             <ol>
                 <li>
                     The "low level" function (promiseFunktion) returns a promise that immedially resolves or rejects, based on a numerical Value
@@ -111,6 +132,10 @@
                     The "high level" function (showResult) resolves that promise. Based on a boolean Value it throws an error, inside the promise callbacks
                 </li>
             </ol>
+        
+
+        <p>
+            <b>Please analyze the source code. Together with the following parameter explanation. The basic Promise handling will be very clear with this.</b>
         </p>
         
         <p>
@@ -123,7 +148,7 @@
                     <li>"False" for callCatch (no Exception)</li>
                 </ul>
             </div>
-            <div class="col-sm"><button id="resolveHandler" class="btn btn-primary">Do it</button></div>
+            <div class="col-sm button-column"><button id="resolveHandler" class="btn btn-outline-primary">Do it</button></div>
         </div>
         <div class="row">
             <div class="col-sm">
@@ -132,7 +157,7 @@
                     <li>"False" for callCatch (no Exception)</li>
                 </ul>
             </div>
-            <div class="col-sm"><button id="rejectHandler" class="btn btn-primary">Do it</button></div>
+            <div class="col-sm button-column"><button id="rejectHandler" class="btn btn-outline-secondary">Do it</button></div>
         </div>
         <div class="row">
             <div class="col-sm">
@@ -141,7 +166,7 @@
                     <li>"True" for callCatch (throw Exception)</li>
                 </ul>
             </div>
-            <div class="col-sm"><button id="resolveHandlerCatch" class="btn btn-primary">Do it</button></div>
+            <div class="col-sm button-column"><button id="resolveHandlerCatch" class="btn btn-outline-danger">Do it</button></div>
         </div>
         <div class="row">
             <div class="col-sm">
@@ -150,15 +175,16 @@
                     <li>"True" for callCatch (throw Exception)</li>
                 </ul>
             </div>
-            <div class="col-sm"><button id="rejectHandlerCatch" class="btn btn-primary">Do it</button></div>
+            <div class="col-sm button-column"><button id="rejectHandlerCatch" class="btn btn-outline-danger">Do it</button></div>
         </div>
     </div>
 
+    <hr>
 
     <div class="container">
         <div class="row">
             <div class="col-sm">Execution Result:</div>
-            <div class="col-sm" id="outPutBox"></div>
+            <div class="col-sm" id="outPutBox"><b>None, fresh app start</b></div>
         </div>
     </div>
 
@@ -175,7 +201,7 @@
             showResult(1,false);
         });
 
-        rejectHandler.addEventListener("clicK", () => {
+        rejectHandler.addEventListener("click", () => {
             showResult(2, false);
         });
 
