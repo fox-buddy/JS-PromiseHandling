@@ -61,9 +61,6 @@
         // Just a simple Promise. Resolves on whatToDo 1, Rejects on any other Value (Buttons hand over 1 or 2)
         function promiseFunktion(whatToDo) {
             return new Promise((resolve, reject) => {
-                let testVar = inputBox.value;
-                console.log(testVar);
-
                 if(whatToDo == 1) {
                     // The value (in this case "good" will be passed through)
                     resolve("Good");    
@@ -166,26 +163,28 @@
     </div>
 
     <script>
+        // global variables for that html controls
         let outPutBox = document.getElementById("outPutBox");
         let resolveHandler = document.getElementById("resolveHandler");
         let rejectHandler = document.getElementById("rejectHandler");
         let resolveHandlerCatch = document.getElementById("resolveHandlerCatch");
         let rejectHandlerCatch = document.getElementById("rejectHandlerCatch");
 
+        // event handlers for button clicks
         resolveHandler.addEventListener("click", () => {
-            showResult(1,False);
+            showResult(1,false);
         });
 
         rejectHandler.addEventListener("clicK", () => {
-            showResult(2, False);
+            showResult(2, false);
         });
 
-        resolveHandlerCatch.addEventListener("click"), () => {
-            showResult(1, True);
-        };
+        resolveHandlerCatch.addEventListener("click", () => {
+            showResult(1, true);
+        });
 
         rejectHandlerCatch.addEventListener("click", () => {
-            showResult(2, True);
+            showResult(2, true);
         });
         
     </script>
